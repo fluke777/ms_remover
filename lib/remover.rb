@@ -17,7 +17,7 @@ module GDC
     end
 
     def initialize(options={})
-      @pattern      = options[:pattern] || "*"
+      @pattern      = options[:pattern] || "**/*"
       
       @index_dir   = Pathname.new(options[:index_dir] || ".").expand_path
       
@@ -29,7 +29,7 @@ module GDC
       FileUtils::cd(@index_dir) do
         files = Dir.glob(@pattern)  
         files.each do |file|
-          File.delete(@target_dir + file) if (File.exist?(@target_dir + file) && (Digest::MD5.file(Pathname.new(file).expand_path) == Digest::MD5.file(@target_dir + file)))
+          File.delete(@target_dir + file) if (File.exist?(@target_dir + file) && (!Pathname.new(file).directory?) && (Digest::MD5.file(Pathname.new(file).expand_path) == Digest::MD5.file(@target_dir + file)))
         end  
       end
     end
